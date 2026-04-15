@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>قاموس المصطلحات</title>
+
+<style>
+body {
+    font-family: Arial;
+    direction: rtl;
+    padding: 20px;
+}
+
+.item {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.header {
+    background: #f2f2f2;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.details {
+    display: none;
+    padding: 10px;
+    background: #fafafa;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📘 قاموس المصطلحات</h2>
+
+<div id="data"></div>
+
+<script>
+
+const rows = [
+["#", "العربي", "English", "التعريف", "المرجع", "الصفحة"],
+
+["أدلة رقمية","Digital Evidence","هي أي معلومات ذات قيمة إثباتية مخزنة أو منقولة في شكل ثنائي، يمكن استخراجها من الحواسب أو الشبكات واستخدامها أمام المحاكم لإثبات واقعة معينة.","Digital Evidence and Computer Crime – Casey","7"],
+["أمن الحاسوب","Computer Security","العلم الذي يهدف إلى حماية الأنظمة والبيانات من الوصول غير المصرح به أو التعديل، مع ضمان توافر الخدمة للمستخدمين الشرعيين وحماية الخصوصية الرقمية.","Cybercrime – Moore","14"],
+["اختراق","Hacking","عملية الوصول غير القانوني أو غير المصرح به لنظام حاسوبي أو شبكة عبر استغلال نقاط الضعف في البرمجيات أو الأجهزة لتحقيق أهداف تخريبية أو تجسسية.","Cybercrime – Moore","45"],
+["انتحال الشخصية","Identity Theft","جريمة تقوم على سرقة معلومات الهوية الشخصية واستخدامها في عمليات احتيالية.","Cybercrime – Moore","175"],
+["إخفاء المعلومات","Steganography","إخفاء الرسائل داخل ملفات رقمية تبدو عادية.","Digital Evidence and Computer Crime – Casey","580"],
+["أرشفة جنائية","Forensic Archiving","حفظ نسخ احتياطية من الأدلة الرقمية بشكل ثابت.","Guide to Computer Forensics – Nelson","350"],
+["أمر تفتيش","Search Warrant","وثيقة قانونية تسمح بفحص الأجهزة.","Guide to Computer Forensics – Nelson","76"],
+["استعادة البيانات","Data Recovery","استخراج الملفات المحذوفة أو التالفة.","Guide to Computer Forensics – Nelson","412"],
+["انتحال العنوان","IP Spoofing","تزييف عنوان المصدر في الشبكات.","Guide to Computer Forensics – Nelson","215"],
+["أصالة الدليل","Evidence Authenticity","التأكد من عدم تعديل الدليل.","Digital Evidence and Computer Crime – Casey","118"],
+["استجابة فورية","Incident Response","إجراءات فورية عند حدوث اختراق.","Digital Evidence and Computer Crime – Casey","210"],
+["أدوات التحقيق","Forensic Tools","برمجيات لتحليل الأدلة الرقمية.","Guide to Computer Forensics – Nelson","330"],
+["ابتزاز إلكتروني","Cyber Extortion","تهديد الضحية مقابل المال.","Cybercrime – Moore","120"],
+["اعتراض البيانات","Data Interception","التنصت على البيانات أثناء انتقالها.","Digital Evidence and Computer Crime – Casey","195"],
+["إساءة الاستخدام","Misuse","استخدام غير مشروع للأنظمة.","Cybercrime – Moore","32"],
+["إتلاف الأدلة","Evidence Spoliation","تدمير أو تعديل الأدلة الرقمية.","Digital Evidence and Computer Crime – Casey","24"],
+["استغلال الثغرات","Exploit","كود يستغل ثغرة في النظام.","Cybercrime – Moore","55"],
+["إذن دخول","Access Permission","صلاحيات المستخدم داخل النظام.","Guide to Computer Forensics – Nelson","142"],
+["أثر رقمي","Digital Trace","بقايا النشاط الرقمي للمستخدم.","Digital Evidence and Computer Crime – Casey","33"],
+["إنكار الخدمة","Denial of Service","إغراق السيرفر حتى يتوقف.","Guide to Computer Forensics – Nelson","210"],
+["أمن الشبكات","Network Security","حماية الشبكات من الهجمات.","Cybercrime – Moore","88"],
+["إثبات الهوية","Authentication","التحقق من هوية المستخدم.","Digital Evidence and Computer Crime – Casey","130"],
+["استخراج جنائي","Forensic Extraction","سحب البيانات بشكل علمي.","Guide to Computer Forensics – Nelson","480"],
+["إدارة الأدلة","Evidence Management","تتبع الأدلة حتى المحكمة.","Digital Evidence and Computer Crime – Casey","155"],
+["إخفاء الهوية","Anonymity","إخفاء هوية المستخدم.","Cybercrime – Moore","180"],
+["أساس قانوني","Legal Basis","المبررات القانونية للتحقيق.","Digital Evidence and Computer Crime – Casey","42"],
+["أدوات الحجب","Blocking Tools","منع الوصول لمواقع أو مستخدمين.","Cybercrime – Moore","201"],
+["أقراص الإقلاع","Boot Disks","تشغيل الجهاز بدون النظام الأصلي.","Guide to Computer Forensics – Nelson","188"],
+["أمن التطبيقات","Application Security","حماية البرمجيات من الثغرات.","Cybercrime – Moore","95"],
+["اتصال مشفر","Encrypted Link","اتصال غير قابل للقراءة أثناء النقل.","Digital Evidence and Computer Crime – Casey","440"],
+["إزاحة البيانات","Data Offsetting","تنظيم الملفات داخل القرص.","Guide to Computer Forensics – Nelson","256"],
+["إعداد التقارير","Forensic Reporting","كتابة نتائج التحقيق.","Guide to Computer Forensics – Nelson","505"],
+["استنساخ الأقراص","Disk Cloning","نسخ كامل للقرص.","Digital Evidence and Computer Crime – Casey","124"],
+["أجهزة محمولة","Mobile Devices","هواتف وأجهزة لوحية تحتوي أدلة.","Guide to Computer Forensics – Nelson","472"],
+["إخطار الضحية","Victim Notification","إبلاغ الضحايا بالاختراق.","Cybercrime – Moore","230"],
+["أدوات الكسر","Cracking Tools","برامج لكسر الحماية.","Cybercrime – Moore","60"],
+["إخلاء المسؤولية","Disclaimer","تنبيه قانوني للمستخدم.","Guide to Computer Forensics – Nelson","82"],
+["اختبار الاختراق","Penetration Testing","اختبار أمني لاكتشاف الثغرات.","Cybercrime – Moore","110"],
+["استلام الدليل","Evidence Intake","تسجيل حالة الدليل عند الاستلام.","Digital Evidence and Computer Crime – Casey","150"],
+["أمن مادي","Physical Security","حماية الأجهزة مادياً.","Cybercrime – Moore","18"],
+["استخراج الكلمات","Keyword Search","بحث داخل الملفات عن كلمات محددة.","Guide to Computer Forensics – Nelson","380"],
+["إثبات المصدر","Non-repudiation","منع إنكار إرسال البيانات.","Digital Evidence and Computer Crime – Casey","410"],
+["إطار التحقيق","Investigative Framework","منهجية التحقيق الجنائي.","Guide to Computer Forensics – Nelson","12"],
+["أمن البيانات","Data Security","حماية البيانات من الضياع.","Digital Evidence and Computer Crime – Casey","35"],
+["استدلال رقمي","Digital Reasoning","ربط الأدلة لبناء سيناريو.","Digital Evidence and Computer Crime – Casey","280"],
+["أجهزة تحليل","Analysis Workstations","أجهزة قوية لتحليل الأدلة.","Guide to Computer Forensics – Nelson","320"],
+["استجواب رقمي","Digital Interrogation","تحليل سجلات النشاط.","Cybercrime – Moore","190"],
+["أدوات الحماية","Security Suites","برامج حماية شاملة.","Cybercrime – Moore","102"]
+
+];
+
+displayData(rows);
+
+function displayData(rows) {
+    const container = document.getElementById('data');
+    container.innerHTML = "";
+
+    for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+
+        const arabic = row[0];
+        const english = row[1];
+        const definition = row[2];
+        const source = row[3];
+        const page = row[4];
+
+        const item = document.createElement('div');
+        item.className = 'item';
+
+        const header = document.createElement('div');
+        header.className = 'header';
+        header.textContent = arabic;
+
+        const details = document.createElement('div');
+        details.className = 'details';
+        details.innerHTML = `
+            <p><b>الإنجليزية:</b> ${english}</p>
+            <p><b>التعريف:</b> ${definition}</p>
+            <p><b>المرجع:</b> ${source}</p>
+            <p><b>الصفحة:</b> ${page}</p>
+        `;
+
+        header.onclick = () => {
+            details.style.display =
+                details.style.display === 'block' ? 'none' : 'block';
+        };
+
+        item.appendChild(header);
+        item.appendChild(details);
+        container.appendChild(item);
+    }
+}
+</script>
+
+</body>
+</html>
